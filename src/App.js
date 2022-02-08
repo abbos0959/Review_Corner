@@ -1,54 +1,42 @@
-import React, { useState, useEffect } from "react";
+import { PieChart } from "./component/PieChart";
+import React, { useState } from "react";
 import "./App.css";
-import { Addnote } from "./components/Addnote";
-import { Header } from "./components/Header";
-import { Note } from "./components/Note";
-import { NoteList } from "./components/NoteList";
-import { Search } from "./components/Search";
-import { nanoid } from "nanoid";
+import { Barchart } from "./component/Barchart";
+import { Form } from "./component/Form";
+import { Header } from "./component/Header";
+import { LineChart } from "./component/LineChart";
+import { UserData } from "./Data";
 
 function App() {
-  const Initialstate = [
-    { id: nanoid(), text: "salom dunyo", date: "13/01/2022" },
-
-    { id: nanoid(), text: "bugun 14 yanvar", date: "14/01/2022" },
-
-    {
-      id: nanoid(),
-      text: "bugun bizga sessiya boshlanadi",
-      date: "24/01/2022",
-    },
-  ];
-
-  const [notes, setNotes] = useState(Initialstate);
-  const [searchText, setSearchText] = useState("");
-  const [darkMode, setDarkMode] = useState(false);
-  const addNotes = (text) => {
-    const date = new Date();
-    const newNote = {
-      id: nanoid(),
-      text: text,
-      date: date.toLocaleDateString(),
-    };
-    const newNotes = [...notes, newNote];
-    setNotes(newNotes);
-  };
-  const deleteNote = (id) => {
-    const newi = notes.filter((a) => a.id !== id);
-    setNotes(newi);
-  };
+  const [userData, setuserData] = useState({
+    labels: UserData.map((data) => data.year),
+    datasets: [
+      {
+        label: "Yillik daromad",
+        data: UserData.map((data) => data.yillikdaromad),
+        backgroundColor: [
+          "rgba(75,192,192,1)",
+          "#ecf0f1",
+          "#50AF95",
+          "#f3ba2f",
+          "#2a71d0",
+        ],
+        borderColor: "black",
+        borderWidth: 2,
+      },
+    ],
+  });
   return (
-    <div className={`${darkMode && "dark-mode"}`}>
-      <div className="container">
-        <Header handletoggleDarkMode={setDarkMode} />
-        <Search handleSearchNote={setSearchText} />
-        <NoteList
-          notes={notes.filter((note) =>
-            note.text.toLocaleLowerCase().includes(searchText)
-          )}
-          handleAddNote={addNotes}
-          handleDeleteNote={deleteNote}
-        />
+    <div className="App">
+      <Header />
+      <Form />
+
+      <div className="chart">
+        <div className="barchart">
+          <Barchart chartData={userData} />
+          <LineChart chartData={userData}/>
+          <PieChart chartData={userData}/>
+        </div>
       </div>
     </div>
   );
